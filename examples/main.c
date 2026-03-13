@@ -12,9 +12,12 @@
 #include "LCD_1in47.h"
 #include "GUI_BMP.h"
 
+//плохо. 
+//в .h файле опиши свою систему команд. формат заголовка опиши в стурктуре.
 #define CMD_OPEN_IMAGE_1  0x4E49504F
 #define CMD_OPEN_IMAGE_2  0x4D49504F
 
+//это лучше
 const uint8_t PACKET_SIZE = 6;
 const uint8_t HEADER_SIZE = 2;
 const uint8_t DATA_SIZE = 4;
@@ -22,6 +25,7 @@ const uint8_t DATA_SIZE = 4;
 int serial_port = -1;
 UWORD *BlackImage = NULL;
 
+//что это и для чего разорбался?
 void Handler_1IN47_LCD(int signo) {
         printf("\r\nHandler: Program stop\r\n");
         if (BlackImage != NULL) {
@@ -67,7 +71,7 @@ void display_image(const char *bmp_path) {
 
 int main(int argc, char *argv[]) {
     uint8_t rxBuffer[PACKET_SIZE];
-
+    //что это и для чего разорбался?
     signal(SIGINT, Handler_1IN47_LCD);
     signal(SIGTERM, Handler_1IN47_LCD);
 
