@@ -1,8 +1,7 @@
 #include <windows.h>
 #include <stdio.h>
-#include <stdint.h>
 
-const uint8_t PACKET_SIZE = 6;
+#include "header.h"
 
 int main(int argc, char **argv) {
     if (argc < 2) {
