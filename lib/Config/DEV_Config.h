@@ -77,7 +77,6 @@
 
 /*------------------------------------------------------------------------------------------------------*/
 UBYTE DEV_ModuleInit(void);
-void DEV_ModuleExit(void);
 
 void DEV_GPIO_Mode(UWORD Pin, UWORD Mode);
 void DEV_Digital_Write(UWORD Pin, UBYTE Value);

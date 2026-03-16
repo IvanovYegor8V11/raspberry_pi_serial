@@ -136,13 +136,3 @@ void DEV_SPI_Write_nByte(uint8_t *pData, uint32_t Len)
 {
     lgSpiWrite(SPI_Handle,(char*) pData, Len);
 }
-
-/******************************************************************************
-function:	Module exits, closes SPI and BCM2835 library
-parameter:
-Info:
-******************************************************************************/
-void DEV_ModuleExit(void)
-{
-    
-}

@@ -16,19 +16,17 @@ int serial_port = -1;
 UWORD *BlackImage = NULL;
 
 void Handler_1IN47_LCD(int signo) {
-        printf("\r\nHandler: Program stop\r\n");
-        if (BlackImage != NULL) {
-                free(BlackImage);
-                BlackImage = NULL;
-        }
+    printf("\r\nHandler: Program stop\r\n");
+    if (BlackImage != NULL) {
+        free(BlackImage);
+        BlackImage = NULL;
+    }
 
-        if (serial_port >= 0) {
-                close(serial_port);
-        }
+    if (serial_port >= 0) {
+        close(serial_port);
+    }
 
-        DEV_ModuleExit();
-
-        exit(0);
+    exit(0);
 }
 
 int read_exact(int fd, uint8_t *buffer, int count) {
@@ -50,11 +48,11 @@ void display_image(const char *bmp_path) {
         Paint_SetRotate(ROTATE_0);
 
         if (GUI_ReadBmp(bmp_path) == 0) {
-                LCD_1IN47_Display(BlackImage);
-                printf("Image displayed successfully\n");
+            LCD_1IN47_Display(BlackImage);
+            printf("Image displayed successfully\n");
         }
         else {
-                printf("Failed to load image: %s\n", bmp_path);
+            printf("Failed to load image: %s\n", bmp_path);
         }
 }
 
@@ -66,7 +64,6 @@ int main(int argc, char *argv[]) {
     printf("Initializing LCD...\n");
     if (DEV_ModuleInit() != 0) {
         printf("Failed to initialize LCD module\n");
-        DEV_ModuleExit();
         return 1;
     }
 
@@ -77,7 +74,6 @@ int main(int argc, char *argv[]) {
     UDOUBLE Imagesize = LCD_1IN47_HEIGHT * LCD_1IN47_WIDTH * 2;
     if ((BlackImage = (UWORD*)malloc(Imagesize)) == NULL) {
         printf("Failed to apply for black memory...\n");
-        DEV_ModuleExit();
         return 1;
     }
 
@@ -88,7 +84,6 @@ int main(int argc, char *argv[]) {
     if (serial_port < 0) {
         printf("Error opening serial port: %d\n", serial_port);
         free(BlackImage);
-        DEV_ModuleExit();
         return 1;
     }
 
@@ -97,7 +92,6 @@ int main(int argc, char *argv[]) {
         printf("Error from tcgetattr\n");
         close(serial_port);
         free(BlackImage);
-        DEV_ModuleExit();
         return 1;
     }
 
