@@ -1,10 +1,10 @@
 DIR_Config   = ./lib/Config
 DIR_EPD      = ./lib/LCD
 DIR_GUI      = ./lib/GUI
-DIR_Examples = ./examples
+DIR_Sources = ./src
 DIR_BIN      = ./bin
 
-OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_Examples}/*.c)
+OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_Sources}/*.c)
 OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 
 TARGET = main
@@ -18,14 +18,14 @@ CFLAGS += $(MSG)
 ${TARGET}:${OBJ_O}
         $(CC) $(CFLAGS) $(OBJ_O) -o $@ $(LIB)
 
-${DIR_BIN}/%.o:$(DIR_Examples)/%.c
+${DIR_BIN}/%.o:$(DIR_Sources)/%.c
         $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config) -I $(DIR_GUI) -I $(DIR_EPD)
 
 ${DIR_BIN}/%.o:$(DIR_EPD)/%.c
         $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)
 
 ${DIR_BIN}/%.o:$(DIR_GUI)/%.c
-        $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)  -I $(DIR_EPD) -I $(DIR_Examples)
+        $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)  -I $(DIR_EPD) -I $(DIR_Sources)
 
 ${DIR_BIN}/%.o:$(DIR_Config)/%.c
         $(CC) $(CFLAGS) -c  $< -o $@ $(LIB)
