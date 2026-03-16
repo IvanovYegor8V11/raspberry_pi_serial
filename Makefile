@@ -1,7 +1,7 @@
 DIR_Config   = ./lib/Config
 DIR_EPD      = ./lib/LCD
 DIR_GUI      = ./lib/GUI
-DIR_Sources = ./src
+DIR_Sources  = ./src
 DIR_BIN      = ./bin
 
 OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_Config}/*.c ${DIR_GUI}/*.c ${DIR_Sources}/*.c)
@@ -16,20 +16,20 @@ MSG = -g -O0 -Wall
 CFLAGS += $(MSG)
 
 ${TARGET}:${OBJ_O}
-        $(CC) $(CFLAGS) $(OBJ_O) -o $@ $(LIB)
+	$(CC) $(CFLAGS) $(OBJ_O) -o $@ $(LIB)
 
 ${DIR_BIN}/%.o:$(DIR_Sources)/%.c
-        $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config) -I $(DIR_GUI) -I $(DIR_EPD)
+	$(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config) -I $(DIR_GUI) -I $(DIR_EPD)
 
 ${DIR_BIN}/%.o:$(DIR_EPD)/%.c
-        $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)
+	$(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)
 
 ${DIR_BIN}/%.o:$(DIR_GUI)/%.c
-        $(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)  -I $(DIR_EPD) -I $(DIR_Sources)
+	$(CC) $(CFLAGS) -c  $< -o $@ -I $(DIR_Config)  -I $(DIR_EPD) -I $(DIR_Sources)
 
 ${DIR_BIN}/%.o:$(DIR_Config)/%.c
-        $(CC) $(CFLAGS) -c  $< -o $@ $(LIB)
+	$(CC) $(CFLAGS) -c  $< -o $@ $(LIB)
 
 clean :
-        rm $(DIR_BIN)/*.*
-        rm $(TARGET)
+	rm $(DIR_BIN)/*.*
+	rm $(TARGET)
