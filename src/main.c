@@ -1,23 +1,16 @@
-#include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <termios.h>
-#include <stdint.h>
 #include <string.h>
+
+#include "header.h"
 
 #include "DEV_Config.h"
 #include "LCD_1in47.h"
 #include "GUI_BMP.h"
-
-#define CMD_OPEN_IMAGE_1  0x4E49504F
-#define CMD_OPEN_IMAGE_2  0x4D49504F
-
-const uint8_t PACKET_SIZE = 6;
-const uint8_t HEADER_SIZE = 2;
-const uint8_t DATA_SIZE = 4;
 
 int serial_port = -1;
 UWORD *BlackImage = NULL;
@@ -69,7 +62,6 @@ int main(int argc, char *argv[]) {
     uint8_t rxBuffer[PACKET_SIZE];
 
     signal(SIGINT, Handler_1IN47_LCD);
-    signal(SIGTERM, Handler_1IN47_LCD);
 
     printf("Initializing LCD...\n");
     if (DEV_ModuleInit() != 0) {
@@ -131,43 +123,41 @@ int main(int argc, char *argv[]) {
     printf("System ready. Waiting for commands...\n");
     printf("Send: 4F 50 XX XX XX XX (where XX is image ID)\n\n");
 
-        while (1) {
-                int n = read_exact(serial_port, rxBuffer, PACKET_SIZE);
+    while (1) {
+        int n = read_exact(serial_port, rxBuffer, PACKET_SIZE);
 
-                if (n == PACKET_SIZE) {
-                        printf("Received [%d bytes]: ", n);
+        if (n == PACKET_SIZE) {
+            printf("Received [%d bytes]: ", n);
 
-                        for (int i = 0; i < n; i++) {
-                                printf("%02X ", rxBuffer[i]);
-                        }
-                        printf("\n");
+            for (int i = 0; i < n; i++) {
+                    printf("%02X ", rxBuffer[i]);
+            }
+            printf("\n");
 
+            if (rxBuffer[0] == 0x4F && rxBuffer[1] == 0x50) {
+                uint32_t image_id = 0;
+                memcpy(&image_id, &rxBuffer[2], 4);
 
+                printf("Command: OPEN_IMAGE, ID: 0x%08X\n", image_id);
 
-                        if (rxBuffer[0] == 0x4F && rxBuffer[1] == 0x50) {
-                                uint32_t image_id = 0;
-                                memcpy(&image_id, &rxBuffer[2], 4);
-
-                                printf("Command: OPEN_IMAGE, ID: 0x%08X\n", image_id);
-
-                                if (image_id == CMD_OPEN_IMAGE_1) {
-                                    display_image("./pic/LCD_1inch47.bmp");
-                                }
-                                else if (image_id == CMD_OPEN_IMAGE_2) {
-                                    display_image("./pic/LCD_1inch54.bmp");
-                                }
-                                else {
-                                    printf("Unknown image ID: 0x%08X\n", image_id);
-                                }
-                        }
-                        else {
-                                printf("Unknown command header\n");
-                        }
+                if (image_id == CMD_OPEN_IMAGE_1) {
+                    display_image("./pic/LCD_1inch47.bmp");
                 }
-                else if (n > 0) {
-                    printf("Incomplete packet received: %d bytes\n", n);
+                else if (image_id == CMD_OPEN_IMAGE_2) {
+                    display_image("./pic/LCD_1inch54.bmp");
                 }
+                else {
+                    printf("Unknown image ID: 0x%08X\n", image_id);
+                }
+            }
+            else {
+                    printf("Unknown command header\n");
+            }
         }
+        else if (n > 0) {
+            printf("Incomplete packet received: %d bytes\n", n);
+        }
+    }
 
     return 0;
 }

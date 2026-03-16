@@ -14,16 +14,11 @@
 
 #include "Debug.h"
 
-#ifdef USE_BCM2835_LIB
-    #include <bcm2835.h>
-#elif USE_WIRINGPI_LIB
-    #include <wiringPi.h>
-    #include <wiringPiSPI.h>
-#elif USE_DEV_LIB
-    #include <lgpio.h>
-    #define LFLAGS 0
-    #define NUM_MAXBUF  4
-#endif
+
+#include <lgpio.h>
+#define LFLAGS 0
+#define NUM_MAXBUF  4
+
 #include <unistd.h>
 
 #include <errno.h>
