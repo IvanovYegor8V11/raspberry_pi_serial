@@ -23,7 +23,6 @@ int main(int argc, char **argv) {
     char command[5];
     snprintf(command, sizeof(command), argv[2]);
 
-
     if (strcmp(command, "opic") == 0) {
         txBuffer[0] = 0x4F;                     // 'O' in ASCII
         txBuffer[1] = 0x50;                     // 'P' in ASCII
