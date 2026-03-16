@@ -124,7 +124,7 @@ int main(int argc, char *argv[]) {
             printf("Received [%d bytes]: ", n);
 
             for (int i = 0; i < n; i++) {
-                    printf("%02X ", rxBuffer[i]);
+                printf("%02X ", rxBuffer[i]);
             }
             printf("\n");
 
@@ -137,20 +137,20 @@ int main(int argc, char *argv[]) {
                            ((image_id & 0x00FF0000) >> 8)  |
                            ((image_id & 0xFF000000) >> 24);
 
+                char filename[32];
+                snprintf(filename, sizeof(filename), "pic/%u.bmp", image_id);
+
                 printf("Command: OPEN_IMAGE, ID: 0x%08X\n", image_id);
 
-                if (image_id == CMD_OPEN_IMAGE_1) {
-                    display_image("./pic/LCD_1inch47.bmp");
-                }
-                else if (image_id == CMD_OPEN_IMAGE_2) {
-                    display_image("./pic/LCD_1inch54.bmp");
+                if (access(filename, F_OK) == 0) {
+                    display_image(filename);
                 }
                 else {
                     printf("Unknown image ID: 0x%08X\n", image_id);
                 }
             }
             else {
-                    printf("Unknown command header\n");
+                printf("Unknown command header\n");
             }
         }
         else if (n > 0) {
