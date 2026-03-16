@@ -132,6 +132,11 @@ int main(int argc, char *argv[]) {
                 uint32_t image_id = 0;
                 memcpy(&image_id, &rxBuffer[2], 4);
 
+                image_id = ((image_id & 0x000000FF) << 24) |
+                           ((image_id & 0x0000FF00) << 8)  |
+                           ((image_id & 0x00FF0000) >> 8)  |
+                           ((image_id & 0xFF000000) >> 24);
+
                 printf("Command: OPEN_IMAGE, ID: 0x%08X\n", image_id);
 
                 if (image_id == CMD_OPEN_IMAGE_1) {
