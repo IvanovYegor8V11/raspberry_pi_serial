@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
         free(BlackImage);
         return 1;
     }
-
+    
     cfsetospeed(&tty, B115200);
     cfsetispeed(&tty, B115200);
 
