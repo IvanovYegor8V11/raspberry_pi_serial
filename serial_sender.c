@@ -83,14 +83,6 @@ int main(int argc, char **argv) {
 
     Sleep(500);
 
-    txBuffer[0] = 0x4F; 
-    txBuffer[1] = 0x50;
-    
-    txBuffer[2] = 0x4F;
-    txBuffer[3] = 0x50;
-    txBuffer[4] = 0x49;
-    txBuffer[5] = 0x4E;     // 4E or 4D 
-
     if (WriteFile(hSerial, txBuffer, PACKET_SIZE, &bytesWritten, NULL)) {
         printf("Sent %ld bytes\n", bytesWritten);
     } 
