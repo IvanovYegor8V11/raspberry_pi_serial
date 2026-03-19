@@ -260,7 +260,5 @@ int main(int argc, char *argv[]) {
         printf("\nWaiting for next command...\n\n");
     }
 
-    if (BlackImage != NULL) free(BlackImage);
-    if (serial_port >= 0) close(serial_port);
     return 0;
 }
