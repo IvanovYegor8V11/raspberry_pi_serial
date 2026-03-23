@@ -16,19 +16,6 @@
 int serial_port = -1;
 UWORD *BlackImage = NULL;
 
-void Handler_1IN47_LCD(int signo) {
-    printf("\r\nHandler: Program stop\r\n");
-    if (BlackImage != NULL) {
-        free(BlackImage);
-        BlackImage = NULL;
-    }
-    if (serial_port >= 0) {
-        close(serial_port);
-        serial_port = -1;
-    }
-    exit(0);
-}
-
 int read_exact(int fd, uint8_t *buffer, int count, int timeout_sec) {
     int total_read = 0;
     int n;
@@ -74,7 +61,7 @@ int receive_bmp_file(int fd, const char* output_filename) {
     
     printf("Expected file size: %u bytes\n", fileSize);
     
-    uint8_t ack = 0xAA;
+    uint8_t ack = ACK;
     if (write(fd, &ack, 1) != 1) {
         printf("Error: Failed to send ACK\n");
         return -1;
@@ -117,7 +104,7 @@ int receive_bmp_file(int fd, const char* output_filename) {
     printf("\n");
     
     uint8_t endMarker;
-    if (read_exact(fd, &endMarker, 1, 5) == 1 && endMarker == 0xFF) {
+    if (read_exact(fd, &endMarker, 1, 5) == 1 && endMarker == END) {
         printf("Transfer completed successfully!\n");
     } 
     else {
@@ -146,8 +133,6 @@ void display_image(const char *bmp_path) {
 
 int main(int argc, char *argv[]) {
     uint8_t rxBuffer[PACKET_SIZE];
-
-    signal(SIGINT, Handler_1IN47_LCD);
 
     printf("Initializing LCD...\n");
     if (DEV_ModuleInit() != 0) {
@@ -193,6 +178,7 @@ int main(int argc, char *argv[]) {
     tty.c_iflag &= ~(IXON | IXOFF | IXANY);
 
     tty.c_oflag = 0;
+
     tty.c_lflag = 0;
 
     tty.c_cc[VMIN] = 0;
@@ -232,7 +218,7 @@ int main(int argc, char *argv[]) {
         char filename[64];
         snprintf(filename, sizeof(filename), "pic/%u.bmp", image_id);
 
-        if (rxBuffer[0] == 0x4F && rxBuffer[1] == 0x50) {
+        if (rxBuffer[0] == OPEN && rxBuffer[1] == PIC) {
             printf("Command: OPEN_IMAGE, ID: %u\n", image_id);
             
             if (access(filename, F_OK) == 0) {
@@ -242,7 +228,7 @@ int main(int argc, char *argv[]) {
                 printf("Error: File not found: %s\n", filename);
             }
         }
-        else if (rxBuffer[0] == 0x4C && rxBuffer[1] == 0x50) {
+        else if (rxBuffer[0] == LOAD && rxBuffer[1] == PIC) {
             printf("Command: LOAD_IMAGE, ID: %u\n", image_id);
             printf("Target file: %s\n", filename);
             

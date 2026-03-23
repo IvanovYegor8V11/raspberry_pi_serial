@@ -62,7 +62,7 @@ int send_file(HANDLE hSerial, const char* filename) {
 
     uint8_t ack;
     DWORD bytesRead;
-    if (!ReadFile(hSerial, &ack, 1, &bytesRead, NULL) || bytesRead != 1 || ack != 0xAA) {
+    if (!ReadFile(hSerial, &ack, 1, &bytesRead, NULL) || bytesRead != 1 || ack != ACK) {
         printf("Error: No acknowledgment from receiver\n");
         fclose(file);
         return -1;
@@ -86,7 +86,7 @@ int send_file(HANDLE hSerial, const char* filename) {
         fflush(stdout);
     }
 
-    uint8_t endMarker = 0xFF;
+    uint8_t endMarker = END;
     WriteFile(hSerial, &endMarker, 1, &bytesWritten, NULL);
 
     printf("\nFile sent successfully!\n");
@@ -116,12 +116,12 @@ int main(int argc, char **argv) {
     snprintf(command, sizeof(command), "%s", argv[2]);
 
     if (strcmp(command, "opic") == 0) {
-        txBuffer[0] = 0x4F;                     // 'O' in ASCII
-        txBuffer[1] = 0x50;                     // 'P' in ASCII
+        txBuffer[0] = OPEN;
+        txBuffer[1] = PIC;
     }
     else if (strcmp(command, "lpic") == 0) {
-        txBuffer[0] = 0x4C;                     // 'L' in ASCII
-        txBuffer[1] = 0x50;                     // 'P' in ASCII
+        txBuffer[0] = LOAD;
+        txBuffer[1] = PIC;
     }
     else {
         printf("Error: Unsupported command '%s'\n", argv[2]);
