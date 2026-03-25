@@ -190,7 +190,7 @@ int main(int argc, char *argv[]) {
     printf("System ready. Waiting for commands...\n");
     printf("Commands:\n");
     printf("  4F 50 XX XX XX XX - Open image (opic) - display existing file\n");
-    printf("  4C 50 XX XX XX XX - Load image (lpic) - receive file then display\n\n");
+    printf("  4C 50 XX XX XX XX - Load image (lpic) - receive file\n\n");
 
     while (1) {
         uint8_t header[2];
